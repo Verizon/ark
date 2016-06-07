@@ -234,17 +234,21 @@ class Scheduler[T <: SchedulerState[T]](stateManager: SchedulerStateManager[T]) 
     inbound.enqueueOne(ErrorMessage(driver, message)).run
   }
 
+  // When framework registers it is recommended to trigger reconcialiation, sending a RegisteredMessage first
+  // to allow state manager to initialize state before starting reconciliation.
   override def registered(driver: SchedulerDriver, frameworkId: FrameworkID, masterInfo: MasterInfo): Unit = {
     val host = masterInfo.getHostname
     val port = masterInfo.getPort
     val id = frameworkId.getValue
     log.info(s"Registered with Mesos master [$host:$port] frameworkID=$id")
-    inbound.enqueueAll(Seq(ReconcileMessage(driver), RegisteredMessage(driver, frameworkId, masterInfo))).run
+    inbound.enqueueAll(Seq(RegisteredMessage(driver, frameworkId, masterInfo), ReconcileMessage(driver))).run
   }
 
+  // When framework reregisters it is recommended to trigger reconcialiation, sending a ReregisteredMessage first
+  // to allow state manager to initialize state before starting reconciliation.
   override def reregistered(driver: SchedulerDriver, masterInfo: MasterInfo): Unit = {
     log.info(s"Reregistered with Mesos master ${masterInfo.getHostname}:${masterInfo.getPort}")
-    inbound.enqueueAll(Seq(ReconcileMessage(driver), ReregisteredMessage(driver, masterInfo))).run
+    inbound.enqueueAll(Seq(ReregisteredMessage(driver, masterInfo), ReconcileMessage(driver))).run
   }
 
   override def disconnected(driver: SchedulerDriver): Unit = {
