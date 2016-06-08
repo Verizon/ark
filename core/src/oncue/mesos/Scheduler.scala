@@ -100,6 +100,7 @@ class Scheduler[T <: SchedulerState[T]](stateManager: SchedulerStateManager[T]) 
               driver.launchTasks(Collections.singleton(offer.getId), x.asJava)
               (newState, reconcileState)
             case (newState, _) =>
+              log.debug(s"declining offer ${offer.getId.getValue}@${offer.getSlaveId.getValue}")
               driver.declineOffer(offer.getId)
               (newState, reconcileState)
           }
@@ -234,7 +235,7 @@ class Scheduler[T <: SchedulerState[T]](stateManager: SchedulerStateManager[T]) 
     inbound.enqueueOne(ErrorMessage(driver, message)).run
   }
 
-  // When framework registers it is recommended to trigger reconcialiation, sending a RegisteredMessage first
+  // When framework registers it is recommended to trigger reconciliation, sending a RegisteredMessage first
   // to allow state manager to initialize state before starting reconciliation.
   override def registered(driver: SchedulerDriver, frameworkId: FrameworkID, masterInfo: MasterInfo): Unit = {
     val host = masterInfo.getHostname
@@ -244,7 +245,7 @@ class Scheduler[T <: SchedulerState[T]](stateManager: SchedulerStateManager[T]) 
     inbound.enqueueAll(Seq(RegisteredMessage(driver, frameworkId, masterInfo), ReconcileMessage(driver))).run
   }
 
-  // When framework reregisters it is recommended to trigger reconcialiation, sending a ReregisteredMessage first
+  // When framework reregisters it is recommended to trigger reconciliation, sending a ReregisteredMessage first
   // to allow state manager to initialize state before starting reconciliation.
   override def reregistered(driver: SchedulerDriver, masterInfo: MasterInfo): Unit = {
     log.info(s"Reregistered with Mesos master ${masterInfo.getHostname}:${masterInfo.getPort}")
