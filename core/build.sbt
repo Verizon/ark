@@ -16,7 +16,10 @@
 //: ----------------------------------------------------------------------------
 common.settings
 
-helpers.compactDirectoryStructureSettings
+resolvers ++= Seq(
+  "scalaz.bintray" at "http://dl.bintray.com/scalaz/releases",
+  "oncue.bintray" at "http://dl.bintray.com/oncue/releases"
+)
 
 libraryDependencies ++= Seq(
   "oncue.journal" %% "core" % "2.2.1",
