@@ -16,8 +16,6 @@
 //: ----------------------------------------------------------------------------
 common.settings
 
-helpers.compactDirectoryStructureSettings
-
 libraryDependencies ++= Seq(
   "oncue.journal" %% "core" % "2.2.1",
   "org.scalaz.stream" %% "scalaz-stream" % common.scalazStreamVersion.value,

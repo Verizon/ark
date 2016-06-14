@@ -28,8 +28,6 @@ addArtifact(artifact in (Compile, assembly), assembly)
 
 Keys.test in assembly := {}
 
-helpers.compactDirectoryStructureSettings
-
 libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-dsl" % "0.9.3",
   "org.http4s" %% "http4s-blaze-server" % "0.9.3",
