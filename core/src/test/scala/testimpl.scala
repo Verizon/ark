@@ -14,7 +14,7 @@
 //:   limitations under the License.
 //:
 //: ----------------------------------------------------------------------------
-package oncue.mesos
+package ark
 
 import java.util.concurrent.atomic.AtomicInteger
 

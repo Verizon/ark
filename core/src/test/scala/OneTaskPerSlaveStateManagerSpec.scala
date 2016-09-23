@@ -14,7 +14,7 @@
 //:   limitations under the License.
 //:
 //: ----------------------------------------------------------------------------
-package oncue.mesos
+package ark
 
 import org.scalatest._
 import scala.collection.JavaConverters._

@@ -1,32 +1,42 @@
-#: ----------------------------------------------------------------------------
-#: Copyright (C) 2016 Verizon.  All Rights Reserved.
-#:
-#:   Licensed under the Apache License, Version 2.0 (the "License");
-#:   you may not use this file except in compliance with the License.
-#:   You may obtain a copy of the License at
-#:
-#:       http://www.apache.org/licenses/LICENSE-2.0
-#:
-#:   Unless required by applicable law or agreed to in writing, software
-#:   distributed under the License is distributed on an "AS IS" BASIS,
-#:   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#:   See the License for the specific language governing permissions and
-#:   limitations under the License.
-#:
-#: ----------------------------------------------------------------------------
 language: scala
 
-sudo: required
+jdk: oraclejdk8
 
-install:
-  - mkdir $HOME/.bintray/
-  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then echo $BINTRAY_CREDENTIALS | base64 --decode > $HOME/.bintray/.credentials; fi"
+scala: 2.10.5
+
+branches:
+  only:
+  - master
 
 before_script:
-  - git config --global user.email "oss@travis-ci.org"
-  - git config --global user.name "travis-ci"
-  - git fetch -q
-  - git checkout -qf $TRAVIS_BRANCH
+  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then git checkout -qf $TRAVIS_BRANCH; fi"
 
 script:
-  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION 'release with-defaults'; else sbt ++$TRAVIS_SCALA_VERSION test; fi"
+  - |
+    if [ $TRAVIS_PULL_REQUEST = 'false' ]; then
+      if [ $RELEASE_ON_PUSH = 'false' ]; then
+        sbt test coverageReport
+      else
+        sbt ++$TRAVIS_SCALA_VERSION 'release with-defaults'
+      fi
+    else
+      sbt test coverageReport
+    fi
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
+
+after_success:
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - "bash <(curl -s https://codecov.io/bash) -r $TRAVIS_REPO_SLUG -t $CODECOV_TOKEN"
+
+env:
+  global:
+    - secure: "COUrXj1IJiY+yvmBABFW8+17lGs6ct8FuGt+XMgtkXO/ZXQYkffnqKjDyZYClCvgKDRyBNZiZ8HexXEcu3g/KKG9Qzx+/f4YcZEW6u/d/KxzWNHo7yuk3cX1p+mMCFrqWss7PjFeoKy4VhoZb8LmHVOBNgI6zrOB9KeyrUHmnbM="
+    - secure: "bBqIDTVUUIHxj6ARiKBQ6MVbAVw+bRtF6OrPiyLYMhQrOEwLXHjvPb3sKowUAPJtv6CHruiFjZVK1mgYofiybps6PJPDfoRME/yCAbu8KNv1bWJLf58uvwWoH30dEoGliv0Lw90KxHxs7WFXkksOTvJi9B8G7WFK/4y6ACjCZew="
+    - secure: "KmIhYTvl5jhRbZSwfOJPwyc0c84pPJdKD4DE7hx+DPookbClTfP0s5HB0m1wiM0jRs+GO5pNpasFMuyze0F5PAHbz5BZj312704QovUUWA9kEAnWHiTj3KxTN26hA8aCUhfzYwFhbRH/9ayw8HTzmQSuytlEmbtfOMa8vNaDMfE="

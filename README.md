@@ -1,4 +1,8 @@
-# Mesos Scheduler
+# Ark
+
+[![Build Status](https://travis-ci.org/Verizon/ark.svg?branch=master)](https://travis-ci.org/Verizon/ark)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.verizon.ark/core_2.10/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.verizon.ark/core_2.10)
+[![codecov](https://codecov.io/gh/Verizon/ark/branch/master/graph/badge.svg)](https://codecov.io/gh/Verizon/ark)
 
 This library provides a functional scala implementation of `org.apache.mesos.Scheduler` interface provided by [Mesos java API](http://mesos.apache.org/api/latest/java/).
 

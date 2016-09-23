@@ -14,7 +14,8 @@
 //:   limitations under the License.
 //:
 //: ----------------------------------------------------------------------------
-package oncue.mesos.example
+package ark
+package example
 
 import oncue.mesos._
 import org.apache.mesos.MesosSchedulerDriver
