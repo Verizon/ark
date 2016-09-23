@@ -17,7 +17,6 @@
 package ark
 package example
 
-import oncue.mesos._
 import org.apache.mesos.MesosSchedulerDriver
 import org.http4s.EntityEncoder
 import org.http4s.server.{HttpService, Router}

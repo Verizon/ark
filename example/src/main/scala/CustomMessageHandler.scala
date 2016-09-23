@@ -17,7 +17,6 @@
 package ark
 package example
 
-import oncue.mesos._
 import org.apache.mesos.MesosSchedulerDriver
 
 import scalaz.\/
